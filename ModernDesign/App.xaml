@@ -1,0 +1,28 @@
+﻿<Application x:Class="GSApp.App"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:local="clr-namespace:GSApp"
+             xmlns:ViewModel="clr-namespace:GSApp.MVVM.ViewModel"
+             xmlns:view="clr-namespace:GSApp.MVVM.View"
+             StartupUri="MainWindow.xaml">
+    <Application.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="Theme/MenuButtonTheme.xaml"/>
+                <ResourceDictionary Source="Theme/TextboxTheme.xaml"/>
+                <ResourceDictionary Source="Theme/ComboBoxTheme.xaml"/>
+            </ResourceDictionary.MergedDictionaries>
+
+            <DataTemplate DataType="{x:Type ViewModel:HomeViewModel}" >
+                <view:HomeView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:DiscoveryViewModel}" >
+                <view:DiscoveryView/>
+            </DataTemplate>
+            <DataTemplate DataType="{x:Type ViewModel:AudiomixerViewModel}">
+                <view:Audiomixer/>
+            </DataTemplate>
+
+        </ResourceDictionary>
+    </Application.Resources>
+</Application>
