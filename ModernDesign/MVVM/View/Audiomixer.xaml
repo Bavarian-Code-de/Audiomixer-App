@@ -1,0 +1,147 @@
+﻿<UserControl
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             xmlns:local="clr-namespace:GSApp.MVVM.View"
+             xmlns:Theme="clr-namespace:GSApp.Theme" x:Class="GSApp.MVVM.View.Audiomixer"
+             mc:Ignorable="d" 
+             d:DesignHeight="450" d:DesignWidth="800">
+    <StackPanel>
+        <StackPanel Height="41" Orientation="Horizontal">
+            <TextBlock Text="Audiomixer"
+                   Foreground="White"
+                   HorizontalAlignment="Left"
+                   FontSize="20"
+                   Margin="0,0,0,10.333" Width="655"/>
+        </StackPanel>
+        <StackPanel Height="408" Orientation="Horizontal">
+            <StackPanel Height="409" HorizontalAlignment="Left" Width="324" Margin="0,0,0,-1">
+                <StackPanel Height="54" Orientation="Horizontal">
+                    <TextBlock Text="App"
+                   Foreground="White"
+                   HorizontalAlignment="Left"
+                   FontSize="18"
+                   Margin="0,8,0,17" Width="51"/>
+                    <ComboBox x:Name="InstalledAppsComboBox"
+                Style="{StaticResource ComboBoxTheme}" VerticalAlignment="Center"
+                Margin="26,11,322,21" Width="215" HorizontalAlignment="Center" Foreground="White" SelectionChanged="InstalledAppsComboBox_SelectionChanged"
+                />
+                </StackPanel>
+                <StackPanel Height="54" Orientation="Horizontal">
+                    <Grid Width="323">
+                        <TextBlock Text="Icon"
+                   Foreground="White"
+                   HorizontalAlignment="Left"
+                   FontSize="18"
+                   Margin="0,8,0,17" Width="51"/>
+                        <ComboBox x:Name="SelectIconCombobox"
+                Style="{StaticResource ComboBoxTheme}" VerticalAlignment="Center"
+               Width="173" HorizontalAlignment="Center" Foreground="White"
+                Margin="77,10,73,22" 
+                />
+                        <Button x:Name="SelectIconOledbtn" Content="..." Margin="255,10,30,22" Background="{x:Null}" Foreground="White" Click="SelectIconOledbtn_Click">
+                            <Button.Resources>
+                                <Style TargetType="{x:Type Border}">
+                                    <Setter Property="CornerRadius" Value="5"/>
+                                </Style>
+                            </Button.Resources>
+                        </Button>
+                    </Grid>
+
+                </StackPanel>
+                <StackPanel Height="238">
+                    <Grid Height="230">
+                        <TextBlock Text="LED"
+                   Foreground="White"
+                   HorizontalAlignment="Left"
+                   FontSize="18"
+                   Margin="0,10,0,198" Width="37"/>
+                        <Theme:ColorPickerControl Margin="77,10,32,0" Height="22" VerticalAlignment="Top"/>
+                        <Theme:SunSliderControl Margin="72,62,28,135"/>
+                        <TextBlock Text="Bright"
+                            Foreground="White"
+                            HorizontalAlignment="Left"
+                            FontSize="18"
+                            Margin="0,62,0,144" Width="86"/>
+                    </Grid>
+                </StackPanel>
+
+            </StackPanel>
+            <StackPanel Width="397" HorizontalAlignment="Right">
+                <Border Width="300" CornerRadius="5" Height="312" Margin="47,0,46.333,0">
+                    <Border.Background>
+                        <ImageBrush ImageSource="/GSApp;component/Images/Steel.jpg"/>
+                    </Border.Background>
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" >
+
+                            <Border x:Name="Slider1Border" Tag="" Width="75" MouseDown="Slider1Border_MouseDown" CornerRadius="5" BorderThickness="1">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="/GSApp;component/Images/Steel.jpg"/>
+                                </Border.Background>
+                                <Slider x:Name="ChannelOneSlider" Orientation="Vertical" HorizontalAlignment="Center" Margin="28,10,28.667,10" Style="{DynamicResource SliderTheme}" ValueChanged="Slider_ValueChanged"/>
+                                <Border.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                                <Setter Property="Border.BorderBrush" Value="LightBlue" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+
+                            </Border>
+                            <Border x:Name="Slider2Border" MouseDown="Slider2Border_MouseDown" Width="75" BorderThickness="1" CornerRadius="5">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="/GSApp;component/Images/Steel.jpg"/>
+                                </Border.Background>
+                                <Border.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                                <Setter Property="Border.BorderBrush" Value="LightBlue" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Slider Orientation="Vertical" HorizontalAlignment="Center" Margin="28,10,28.667,10"/>
+                            </Border>
+                            <Border x:Name="Slider3Border" Width="75" MouseDown="Slider3Border_MouseDown" BorderThickness="1" CornerRadius="5">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="/GSApp;component/Images/Steel.jpg"/>
+                                </Border.Background>
+                                <Border.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                                <Setter Property="Border.BorderBrush" Value="LightBlue" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Slider Orientation="Vertical" HorizontalAlignment="Center" Margin="28,10,28.667,10"/>
+                            </Border>
+                            <Border x:Name="Slider4Border" Width="75" MouseDown="Slider4Border_MouseDown" BorderThickness="1" CornerRadius="5">
+                                <Border.Background>
+                                    <ImageBrush ImageSource="/GSApp;component/Images/Steel.jpg"/>
+                                </Border.Background>
+                                <Border.Style>
+                                    <Style>
+                                        <Style.Triggers>
+                                            <Trigger Property="UIElement.IsMouseOver" Value="True">
+                                                <Setter Property="Border.BorderBrush" Value="LightBlue" />
+                                            </Trigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Slider Orientation="Vertical" HorizontalAlignment="Center" Margin="28,10,28.667,10"/>
+                            </Border>
+                        </StackPanel>
+                    </Grid>
+                </Border>
+
+            </StackPanel>
+        </StackPanel>
+    </StackPanel>
+</UserControl>
