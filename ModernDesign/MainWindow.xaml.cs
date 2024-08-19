@@ -1,7 +1,9 @@
 ﻿using GSApp.Helper;
 using System;
 using System.Collections.Generic;
+using System.IO.Ports;
 using System.Linq;
+using System.Management;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
@@ -26,6 +28,7 @@ namespace GSApp
         public MainWindow()
         {
             InitializeComponent();
+            establishAudioMixerConnection();
         }
 
         private void Window_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
@@ -42,6 +45,29 @@ namespace GSApp
         {
             AppHelper appHelper = new AppHelper();
             appHelper.getAllInstalledApps(allApps, appProcessIdHelper);
+        }
+        private void establishAudioMixerConnection()
+        {
+            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption like '%(COM%'"))
+            {
+                var portNames = SerialPort.GetPortNames();
+                var ports = searcher.Get()
+                                    .Cast<ManagementBaseObject>()
+                                    .Select(p => p["Caption"].ToString())
+                                    .ToList();
+
+                foreach (var portName in portNames)
+                {
+                    var matchedPort = ports.FirstOrDefault(s => s.Contains(portName));
+                    if (matchedPort != null && matchedPort.Contains("Silicon"))
+                    {
+                        using (var port = new SerialPort(portName, 9600, Parity.None, 8, StopBits.One))
+                        {
+                            port.Open();
+                        }
+                    }
+                }
+            }
         }
     }
 }

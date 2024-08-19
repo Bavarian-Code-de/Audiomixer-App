@@ -1,25 +1,15 @@
 ﻿using GSApp.Helper;
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using Microsoft.Win32;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.Runtime.InteropServices;
-using NAudio.CoreAudioApi;
-using NAudio.CoreAudioApi.Interfaces;
+using System.Windows;
+using System.Windows.Controls;
+using System.Windows.Input;
 using System.Windows.Media.Animation;
+using NAudio.CoreAudioApi;
+using Microsoft.Win32;
+using System.Text;
 
 namespace GSApp.MVVM.View
 {
@@ -30,18 +20,24 @@ namespace GSApp.MVVM.View
     {
         Storyboard storyboard = new Storyboard();
         List<AppProcessIdHelper> appProcessIdHelper = new List<AppProcessIdHelper>();
-        List<string> allApps = new List<string>();
         AudioHelper audioHelper = new AudioHelper();
-        string activeSlider;
+        private Slider _selectedSlider;
+
         public Audiomixer()
         {
             InitializeComponent();
-            //getInstalledApps();
+            this.Loaded += AudioMixer_Loaded;
+        }
+
+        private void AudioMixer_Loaded(object sender, RoutedEventArgs e)
+        {
             getAudioApps();
+            LoadSettings();
         }
 
         public void getAudioApps()
         {
+            InstalledAppsComboBox.Items.Clear();
             List<Process> processes = GetAudioPlayingProcesses();
 
             Console.WriteLine("Processes playing audio:");
@@ -52,20 +48,27 @@ namespace GSApp.MVVM.View
                 Console.WriteLine($"{process.ProcessName} (PID: {process.Id})");
             }
         }
-        public void getInstalledApps()
+
+        public void LoadSettings()
         {
-            AppHelper appHelper = new AppHelper();
-            appHelper.getAllInstalledApps(allApps, appProcessIdHelper);
-            appProcessIdHelper = appHelper.getAllInstalledApps(allApps, appProcessIdHelper);
-            foreach(var item in allApps)
+            SetTextBoxFromSettings(SliderOneApp, Properties.Settings.Default.Slider1);
+            SetTextBoxFromSettings(SliderTwoApp, Properties.Settings.Default.Slider2);
+            SetTextBoxFromSettings(SliderThreeApp, Properties.Settings.Default.Slider3);
+            SetTextBoxFromSettings(SliderFourApp, Properties.Settings.Default.Slider4);
+        }
+
+        private void SetTextBoxFromSettings(TextBox sliderApp, string value)
+        {
+            var textBox = (TextBox)sliderApp.Template.FindName("SearchBar", sliderApp);
+            if (textBox != null)
             {
-                InstalledAppsComboBox.Items.Add(item);
+                textBox.Text = value;
             }
         }
+
         private void SliderAnimation(Border slider)
         {
             storyboard = new Storyboard();
-            // Create a DoubleAnimation to animate the Opacity property
             DoubleAnimation opacityAnimation = new DoubleAnimation
             {
                 From = 1.0,
@@ -75,17 +78,12 @@ namespace GSApp.MVVM.View
                 RepeatBehavior = RepeatBehavior.Forever,
             };
 
-            // Set the target property and target object for the animation
             Storyboard.SetTarget(opacityAnimation, slider);
             Storyboard.SetTargetProperty(opacityAnimation, new PropertyPath(Border.OpacityProperty));
 
-            // Add the animation to the storyboard
             storyboard.Children.Add(opacityAnimation);
-
-            // Start the storyboard
             storyboard.Begin();
         }
-
 
         private void SelectIconOledbtn_Click(object sender, RoutedEventArgs e)
         {
@@ -94,12 +92,13 @@ namespace GSApp.MVVM.View
             var imagePath = ofd.FileName;
             var imageArrays = ImageConverterHelper.ConvertImageToByteArray(imagePath, 128, 64);
             var sb = new StringBuilder();
-            foreach(var image in imageArrays)
+            foreach (var image in imageArrays)
             {
                 sb.Append("0x" + image.ToString("X2") + ", ");
             }
             Debug.Print(sb.ToString());
         }
+
         [DllImport("user32.dll")]
         private static extern IntPtr GetForegroundWindow();
 
@@ -117,7 +116,7 @@ namespace GSApp.MVVM.View
             for (int i = 0; i < sessions.Count; i++)
             {
                 var session = sessions[i];
-                if (session.State == AudioSessionState.AudioSessionStateActive)
+                if (session.State == NAudio.CoreAudioApi.Interfaces.AudioSessionState.AudioSessionStateActive)
                 {
                     uint processId = (uint)session.GetProcessID;
                     try
@@ -139,7 +138,6 @@ namespace GSApp.MVVM.View
         {
             if (InstalledAppsComboBox.SelectedItem != null)
             {
-                var processes = Process.GetProcessesByName(InstalledAppsComboBox.SelectedItem.ToString());
                 foreach (var p in appProcessIdHelper)
                 {
                     if (p.appname == InstalledAppsComboBox.SelectedItem.ToString())
@@ -153,50 +151,76 @@ namespace GSApp.MVVM.View
         #region BorderSliderMouseDown
         private void Slider1Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            activeSlider ="Slider1";
-            storyboard.Stop();
-            SliderAnimation(Slider1Border);
+            SelectSlider(ChannelOneSlider, SliderOneApp, Slider1Border, Properties.Settings.Default.Slider1);
         }
 
         private void Slider2Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            activeSlider = "Slider2";
-            storyboard.Stop();
-            SliderAnimation(Slider2Border);
+            SelectSlider(ChannelTwoSlider, SliderTwoApp, Slider2Border, Properties.Settings.Default.Slider2);
         }
 
         private void Slider3Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            activeSlider = "Slider3";
-            storyboard.Stop();
-            SliderAnimation(Slider3Border);
+            SelectSlider(ChannelThreeSlider, SliderThreeApp, Slider3Border, Properties.Settings.Default.Slider3);
         }
 
         private void Slider4Border_MouseDown(object sender, MouseButtonEventArgs e)
         {
-            activeSlider = "Slider4";
+            SelectSlider(ChannelFourSlider, SliderFourApp, Slider4Border, Properties.Settings.Default.Slider4);
+        }
+
+        private void SelectSlider(Slider slider, TextBox sliderApp, Border sliderBorder, string settingValue)
+        {
+            _selectedSlider = slider;
+            InstalledAppsComboBox.SelectedItem = null;
+            var textBox = (TextBox)sliderApp.Template.FindName("SearchBar", sliderApp);
+
             storyboard.Stop();
-            SliderAnimation(Slider4Border);
+            SliderAnimation(sliderBorder);
+
+            if (!string.IsNullOrEmpty(settingValue))
+            {
+                textBox.Text = settingValue;
+            }
         }
         #endregion
 
         private void InstalledAppsComboBox_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
-            switch (activeSlider)
+            if (_selectedSlider != null && InstalledAppsComboBox.SelectedItem != null)
             {
-                case "Slider1":
-                    Slider1Border.Tag = InstalledAppsComboBox.SelectedItem.ToString();
-                    break;
-                case "Slider2":
-                    Slider2Border.Tag = InstalledAppsComboBox.SelectedItem.ToString();
-                    break;
-                case "Slider3":
-                    Slider3Border.Tag = InstalledAppsComboBox.SelectedItem.ToString();
-                    break;
-                case "Slider4":
-                    Slider4Border.Tag = InstalledAppsComboBox.SelectedItem.ToString();
-                    break;
+                string selectedApp = InstalledAppsComboBox.SelectedItem.ToString();
+                UpdateSettingAndTextBox(_selectedSlider, selectedApp);
             }
+        }
+
+        private void UpdateSettingAndTextBox(Slider slider, string selectedApp)
+        {
+            if (slider == ChannelOneSlider)
+            {
+                Properties.Settings.Default.Slider1 = selectedApp;
+                SetTextBoxFromSettings(SliderOneApp, selectedApp);
+            }
+            else if (slider == ChannelTwoSlider)
+            {
+                Properties.Settings.Default.Slider2 = selectedApp;
+                SetTextBoxFromSettings(SliderTwoApp, selectedApp);
+            }
+            else if (slider == ChannelThreeSlider)
+            {
+                Properties.Settings.Default.Slider3 = selectedApp;
+                SetTextBoxFromSettings(SliderThreeApp, selectedApp);
+            }
+            else if (slider == ChannelFourSlider)
+            {
+                Properties.Settings.Default.Slider4 = selectedApp;
+                SetTextBoxFromSettings(SliderFourApp, selectedApp);
+            }
+        }
+
+        private void InstalledAppsComboBox_MouseDown(object sender, MouseButtonEventArgs e)
+        {
+            getAudioApps();
         }
     }
 }

@@ -22,5 +22,53 @@ namespace GSApp.Properties {
                 return defaultInstance;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Slider1 {
+            get {
+                return ((string)(this["Slider1"]));
+            }
+            set {
+                this["Slider1"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Slider2 {
+            get {
+                return ((string)(this["Slider2"]));
+            }
+            set {
+                this["Slider2"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Slider3 {
+            get {
+                return ((string)(this["Slider3"]));
+            }
+            set {
+                this["Slider3"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string Slider4 {
+            get {
+                return ((string)(this["Slider4"]));
+            }
+            set {
+                this["Slider4"] = value;
+            }
+        }
     }
 }

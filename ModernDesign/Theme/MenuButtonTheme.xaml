@@ -16,7 +16,7 @@
                                        VerticalAlignment="Center"
                                        Margin="50,0,0,0"
                                        />
-                            
+
                         </Grid>
                     </ControlTemplate>
                 </Setter.Value>
@@ -31,9 +31,4 @@
             </Trigger>
         </Style.Triggers>
     </Style>
-    
-    
-    
-    
-    
 </ResourceDictionary>

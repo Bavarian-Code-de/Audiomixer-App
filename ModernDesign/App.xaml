@@ -12,6 +12,7 @@
                 <ResourceDictionary Source="Theme/TextboxTheme.xaml"/>
                 <ResourceDictionary Source="Theme/ComboBoxTheme.xaml"/>
                 <ResourceDictionary Source="Theme/SliderTheme.xaml"/>
+                <ResourceDictionary Source="Theme/TextboxMailMessageTheme.xaml"/>
             </ResourceDictionary.MergedDictionaries>
 
             <DataTemplate DataType="{x:Type ViewModel:HomeViewModel}" >

@@ -21,7 +21,7 @@
                    HorizontalAlignment="Left"
                    FontSize="20"
                    Margin="0,3,0,-4" Width="90"/>
-                <TextBox Style="{StaticResource ModernTextBox}" Margin="128,0,430,0" Width="228"/>
+                <TextBox Style="{StaticResource ModernTextBox}" Margin="50,0,430,0" Width="360" Background="White" FontSize="14" BorderBrush="{x:Null}" MaxLength="32" HorizontalAlignment="Left" Foreground="White"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,45,0,-45">
                 <TextBlock Text="Surname"
@@ -29,7 +29,7 @@
                    HorizontalAlignment="Left"
                    FontSize="20"
                    Margin="0,3,0,-4" Width="90"/>
-                <TextBox Style="{StaticResource ModernTextBox}" Margin="128,0,430,0" Width="228"/>
+                <TextBox Style="{StaticResource ModernTextBox}" Margin="50,0,430,0" Width="360" BorderBrush="{x:Null}" FontSize="14" Foreground="White"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,90,0,-90">
                 <TextBlock Text="Email"
@@ -37,7 +37,7 @@
                    HorizontalAlignment="Left"
                    FontSize="20"
                    Margin="0,3,0,-4" Width="90"/>
-                <TextBox Style="{StaticResource ModernTextBox}" Margin="128,0,430,0" Width="228"/>
+                <TextBox x:Name="Emailtxt" Style="{StaticResource ModernTextBox}" Margin="50,0,430,0" Width="360" BorderBrush="{x:Null}" FontSize="14" TextChanged="Emailtxt_TextChanged" Foreground="White"/>
             </StackPanel>
             <StackPanel Orientation="Horizontal" Margin="0,135,0,-371">
                 <TextBlock Text="Info"
@@ -45,8 +45,15 @@
                    HorizontalAlignment="Left"
                    FontSize="20"
                    Margin="0,3,0,-4" Width="90"/>
-                <TextBox Style="{StaticResource ModernTextBox}" AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" Margin="128,0,430,0" Width="229" Height="236" VerticalAlignment="Top" AutomationProperties.HelpText="Help Message" TextWrapping="Wrap"/>
+                <TextBox x:Name="EmailContent" Style="{StaticResource MailTextBox}" AcceptsReturn="True" HorizontalScrollBarVisibility="Disabled" Margin="50,0,430,0" Width="360" Height="236" VerticalAlignment="Top" AutomationProperties.HelpText="Help Message" TextWrapping="Wrap" Background="#FF353340" Foreground="White" BorderBrush="{x:Null}" FontSize="14"/>
             </StackPanel>
+            <Button x:Name="SendMailBtn" Content="Send Email" Margin="504,0,0,-340" Width="86" HorizontalAlignment="Left" Grid.Column="0" BorderBrush="{x:Null}" ToolTip="Send Email" Height="30" VerticalAlignment="Bottom" Background="#FF58ACFA" Foreground="White" Click="SendMailBtn_Click" >
+                <Button.Resources>
+                    <Style TargetType="{x:Type Border}">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
         </Grid>
     </StackPanel>
 
