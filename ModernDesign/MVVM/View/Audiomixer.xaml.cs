@@ -10,6 +10,11 @@ using System.Windows.Media.Animation;
 using NAudio.CoreAudioApi;
 using Microsoft.Win32;
 using System.Text;
+using System.IO.Ports;
+using System.Text.RegularExpressions;
+using System.Drawing;
+using System.Windows.Media.Imaging;
+using System.IO;
 
 namespace GSApp.MVVM.View
 {
@@ -22,19 +27,126 @@ namespace GSApp.MVVM.View
         List<AppProcessIdHelper> appProcessIdHelper = new List<AppProcessIdHelper>();
         AudioHelper audioHelper = new AudioHelper();
         private Slider _selectedSlider;
-
+        MainWindow mainwindow;
+        
         public Audiomixer()
         {
-            InitializeComponent();
+            InitializeComponent(); 
+            mainwindow = (MainWindow)Application.Current.MainWindow;
             this.Loaded += AudioMixer_Loaded;
+            this.Unloaded += AudioMixer_Unloaded;
+
+
         }
 
+        //private void AudioMixer_Loaded(object sender, RoutedEventArgs e)
+        //{
+        //    getAudioApps();
+        //    LoadSettings();
+        //    getSliderValues();
+        //}
+        private void getSliderValues()
+        {
+            try
+            {
+                mainwindow.port.DataReceived += SerialPort_DataReceived;
+            }
+            catch
+            {
+
+            }
+        }
         private void AudioMixer_Loaded(object sender, RoutedEventArgs e)
         {
             getAudioApps();
             LoadSettings();
+            RegisterSerialPortEvents();
         }
 
+        private void AudioMixer_Unloaded(object sender, RoutedEventArgs e)
+        {
+            UnregisterSerialPortEvents();
+        }
+        private void RegisterSerialPortEvents()
+        {
+            try
+            {
+                if (mainwindow.port != null && mainwindow.port.IsOpen)
+                {
+                    mainwindow.port.DataReceived += SerialPort_DataReceived;
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                MessageBox.Show("Fehler beim Registrieren der Serial-Port-Ereignisse: " + ex.Message);
+#endif
+            }
+        }
+        private void UnregisterSerialPortEvents()
+        {
+            try
+            {
+                if (mainwindow.port != null && mainwindow.port.IsOpen)
+                {
+                    mainwindow.port.DataReceived -= SerialPort_DataReceived;
+                }
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                MessageBox.Show("Fehler beim Abmelden der Serial-Port-Ereignisse: " + ex.Message);
+#endif
+            }
+        }
+        private void SerialPort_DataReceived(object sender, SerialDataReceivedEventArgs e)
+        {
+            try
+            {
+                string data = mainwindow.port.ReadLine();
+                double value = ExtractValueFromString(data);
+
+                Dispatcher.Invoke(() =>
+                {
+                    if (data.Contains("S1"))
+                    {
+                        ChannelOneSlider.Value = value / 10;
+                    }
+                    if (data.Contains("S2"))
+                    {
+                        ChannelTwoSlider.Value = value / 10;
+                    }
+                    if (data.Contains("S3"))
+                    {
+                        ChannelThreeSlider.Value = value / 10;
+                    }
+                    if (data.Contains("S4"))
+                    {
+                        ChannelFourSlider.Value = value / 10;
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+#if DEBUG
+                MessageBox.Show("Fehler beim Lesen von Daten vom Com-Port: " + ex.Message);
+#endif
+            }
+        }
+        static double ExtractValueFromString(string input)
+        {
+            // Regex, um den Wert innerhalb der runden Klammern zu extrahieren
+            Regex regex = new Regex(@"\((\d+(\.\d+)?)\)");
+            Match match = regex.Match(input);
+
+            if (match.Success)
+            {
+                // Extrahierter Wert als double zurückgeben
+                return double.Parse(match.Groups[1].Value);
+            }
+
+            throw new ArgumentException("Kein gültiger Wert gefunden");
+        }
         public void getAudioApps()
         {
             InstalledAppsComboBox.Items.Clear();
@@ -55,6 +167,11 @@ namespace GSApp.MVVM.View
             SetTextBoxFromSettings(SliderTwoApp, Properties.Settings.Default.Slider2);
             SetTextBoxFromSettings(SliderThreeApp, Properties.Settings.Default.Slider3);
             SetTextBoxFromSettings(SliderFourApp, Properties.Settings.Default.Slider4);
+            
+            SliderOneOled.DrawText(Properties.Settings.Default.Slider1, 0,0, 12);
+            SliderTwoOled.DrawText(Properties.Settings.Default.Slider2, 0, 0, 12);
+            SliderThreeOled.DrawText(Properties.Settings.Default.Slider3, 0, 0, 12);
+            SliderFourOled.DrawText(Properties.Settings.Default.Slider4, 0, 0, 12);
         }
 
         private void SetTextBoxFromSettings(TextBox sliderApp, string value)
@@ -221,6 +338,35 @@ namespace GSApp.MVVM.View
         private void InstalledAppsComboBox_MouseDown(object sender, MouseButtonEventArgs e)
         {
             getAudioApps();
+        }
+
+        private void SelectIconCombobox_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ComboBoxItem selectedItem = SelectIconCombobox.SelectedItem as ComboBoxItem;
+            string test = selectedItem.Content.ToString();
+            if(test == "Spotify")
+            {
+                SliderOneOled.ClearDisplay();
+                SliderOneOled.DrawImage(ConvertBitmapToBitmapImage(Properties.Resources.spotifymonochrome),0,0);
+            }
+        }
+        public BitmapImage ConvertBitmapToBitmapImage(Bitmap bitmap)
+        {
+            using (MemoryStream memory = new MemoryStream())
+            {
+                // Speichert das Bitmap in den MemoryStream
+                bitmap.Save(memory, System.Drawing.Imaging.ImageFormat.Bmp);
+                memory.Position = 0;
+
+                // Lädt das BitmapImage aus dem MemoryStream
+                BitmapImage bitmapImage = new BitmapImage();
+                bitmapImage.BeginInit();
+                bitmapImage.StreamSource = memory;
+                bitmapImage.CacheOption = BitmapCacheOption.OnLoad;
+                bitmapImage.EndInit();
+                bitmapImage.Freeze(); // BitmapImage einfrieren, um es thread-safe zu machen
+                return bitmapImage;
+            }
         }
     }
 }

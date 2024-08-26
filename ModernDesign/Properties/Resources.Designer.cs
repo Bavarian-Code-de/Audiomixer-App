@@ -167,5 +167,15 @@ namespace GSApp.Properties {
                 return ResourceManager.GetString("Slider4image", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized resource of type System.Drawing.Bitmap.
+        /// </summary>
+        public static System.Drawing.Bitmap spotifymonochrome {
+            get {
+                object obj = ResourceManager.GetObject("spotifymonochrome", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
     }
 }

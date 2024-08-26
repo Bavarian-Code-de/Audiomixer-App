@@ -25,6 +25,7 @@ namespace GSApp
     {
         List<AppProcessIdHelper> appProcessIdHelper = new List<AppProcessIdHelper>();
         List<string> allApps = new List<string>();
+        public SerialPort port;
         public MainWindow()
         {
             InitializeComponent();
@@ -48,24 +49,21 @@ namespace GSApp
         }
         private void establishAudioMixerConnection()
         {
-            using (var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption like '%(COM%'"))
-            {
-                var portNames = SerialPort.GetPortNames();
-                var ports = searcher.Get()
-                                    .Cast<ManagementBaseObject>()
-                                    .Select(p => p["Caption"].ToString())
-                                    .ToList();
+            var searcher = new ManagementObjectSearcher("SELECT * FROM Win32_PnPEntity WHERE Caption like '%(COM%'");
+            var portNames = SerialPort.GetPortNames();
+            var ports = searcher.Get()
+                                .Cast<ManagementBaseObject>()
+                                .Select(p => p["Caption"].ToString())
+                                .ToList();
 
-                foreach (var portName in portNames)
+            foreach (var portName in portNames)
+            {
+                var matchedPort = ports.FirstOrDefault(s => s.Contains(portName));
+                if (matchedPort != null && matchedPort.Contains("Silicon"))
                 {
-                    var matchedPort = ports.FirstOrDefault(s => s.Contains(portName));
-                    if (matchedPort != null && matchedPort.Contains("Silicon"))
-                    {
-                        using (var port = new SerialPort(portName, 9600, Parity.None, 8, StopBits.One))
-                        {
-                            port.Open();
-                        }
-                    }
+                    port = new SerialPort(portName, 115200, Parity.None, 8, StopBits.One);
+                    port.Open();
+                    break; // Verbindung hergestellt, keine weiteren Ports prüfen
                 }
             }
         }

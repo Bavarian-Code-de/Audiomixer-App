@@ -13,11 +13,11 @@ namespace GSApp.MVVM.ViewModel
         public RelayCommand HelpViewCommand { get; set; }
 
 
-        public HomeViewModel HomeVm { get; set; }
-        public DiscoveryViewModel DiscoveryVm { get; set; }
-        public AudiomixerViewModel AudiomixerVm { get; set; }
-        public SettingsViewModel SettingsVm {get;set;}
-        public HelpViewModel HelpVm { get; set; }
+        public HomeViewModel HomeVm = new HomeViewModel();
+        public DiscoveryViewModel DiscoveryVm = new DiscoveryViewModel();
+        public AudiomixerViewModel AudiomixerVm = new AudiomixerViewModel();
+        public SettingsViewModel SettingsVm = new SettingsViewModel();
+        public HelpViewModel HelpVm = new HelpViewModel();
 
         private object _currentView;
 
@@ -31,11 +31,11 @@ namespace GSApp.MVVM.ViewModel
 
         public MainViewModel()
         {
-            HomeVm =  new HomeViewModel();
-            DiscoveryVm = new DiscoveryViewModel();
-            AudiomixerVm = new AudiomixerViewModel();
-            SettingsVm = new SettingsViewModel();
-            HelpVm = new HelpViewModel();
+            //HomeVm =  new HomeViewModel();
+            //DiscoveryVm = new DiscoveryViewModel();
+            //AudiomixerVm = new AudiomixerViewModel();
+            //SettingsVm = new SettingsViewModel();
+            //HelpVm = new HelpViewModel();
 
             CurrentView = HomeVm;
 

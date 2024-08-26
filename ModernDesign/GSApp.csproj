@@ -35,6 +35,9 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
+  <PropertyGroup>
+    <ApplicationIcon>CompanyIcon.ico</ApplicationIcon>
+  </PropertyGroup>
   <ItemGroup>
     <Reference Include="BouncyCastle.Cryptography, Version=2.0.0.0, Culture=neutral, PublicKeyToken=072edcf4a5328938, processorArchitecture=MSIL">
       <HintPath>..\packages\BouncyCastle.Cryptography.2.4.0\lib\net461\BouncyCastle.Cryptography.dll</HintPath>
@@ -162,6 +165,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Controls\Oled.xaml.cs">
+      <DependentUpon>Oled.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Helper\ComConnectionHelper.cs" />
     <Compile Include="Helper\ImageConverterHelper.cs" />
     <Compile Include="Helper\MailHelper.cs" />
@@ -183,6 +189,10 @@
     <Compile Include="Theme\test.xaml.cs">
       <DependentUpon>test.xaml</DependentUpon>
     </Compile>
+    <Page Include="Controls\Oled.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -321,6 +331,15 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Notes.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="CompanyIcon.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Resources\SpotifyPrimaryLogoRGBGreen-imageonline.co-5576110.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\plastik.jpg" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
